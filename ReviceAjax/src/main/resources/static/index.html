@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1 id="ab"></h1>
+<button onclick="fun()">Ajax GetAll</button>
+<button onclick="fun3()">javascript GetAll</button>
+<button onclick="fun4()">javascript Post</button>
+
+<form>
+    <input id="id">
+    <input id="name">
+    <input id="age">
+    <button>Submit</button>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+
+    function fun(){
+
+            $.ajax({
+                url: "/emp",
+                type: "Get",
+                success:function(result){
+                    $.each(result.data,
+                        function(i,emp){
+                            var user=emp.id+""+emp.name+""+emp.age;
+                            $("#ab").append(user);
+                        })
+
+                }
+            })
+
+    }
+
+    $("form").submit(function(){
+        var user={
+            id:$("#id").val(),
+            name:$("#name").val(),
+            age:$("#age").val()
+        }
+
+        $.ajax({
+            url: "/emp",
+            type: "post",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(user),
+
+            success:function(result){
+                $("#ab").append(result.data);
+            }
+
+
+        })
+    })
+
+    function fun3(){
+
+        const http=new XMLHttpRequest();
+        const url="http://localhost:9090/emp/emp2";
+        http.onreadystatechange=(e)=>{
+            ab.innerHTML=http.responseText;
+        }
+        http.open("Get",url);
+        http.send();
+    }
+
+       function fun4(){
+        var user={
+            id:1,
+            name:"java",
+            age:"99"
+        }
+        const http=new XMLHttpRequest();
+        const url="http://localhost:9090/emp";
+        http.onreadystatechange=(e)=>{
+            if(this.readyState==4 && this.status==400){
+                ab.innerHTML=this.responseText;
+            }
+        }
+        http.open("Post",url,true);
+        http.setRequestHeader("content-type","application/json");
+        http.send(JSON.stringify(user));
+    }
+
+</script>
+
+
+</body>
+</html>
